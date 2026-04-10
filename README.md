@@ -1,134 +1,116 @@
-# 袋享印 · 微信小程序
+# 袋享印 · 后端 API 服务
 
-> 帆布袋DIY定制小程序 · Phase 2 交付物
-> 版本：v1.0.0 | 日期：2026-04-10
+帆布袋DIY定制平台的 Node.js + Express 后端 API，支持微信登录、微信支付、COS文件存储。
 
----
+## 技术栈
 
-## 📦 项目结构
+- **Runtime**: Node.js 18+
+- **Framework**: Express 4
+- **Database**: PostgreSQL 15
+- **文件存储**: 腾讯云 COS
+- **支付**: 微信支付 V3 API
+- **部署**: Docker + Docker Compose
 
-```
-miniprogram/
-├── app.js              # 应用入口
-├── app.json            # 应用配置（页面路由/tabBar/权限）
-├── app.wxss            # 全局样式（CSS变量）
-├── components/         # 通用组件
-│   └── tabbar/         # 自定义底部导航栏
-├── pages/              # 页面
-│   ├── home/           # 首页
-│   ├── designer/       # 设计器（核心）
-│   ├── preview/        # 预览下单
-│   ├── order/          # 订单追踪
-│   └── profile/        # 个人中心
-├── utils/              # 工具函数
-├── assets/             # 静态资源
-└── project.config.json # 微信开发者工具配置
-```
+## API 接口一览
 
----
+### 用户 & 认证
 
-## 🎯 页面功能
+| 方法 | 路径 | 说明 |
+|------|------|------|
+| POST | `/api/wechat/login` | 微信小程序登录 |
+| POST | `/api/wechat/pay/unified-order` | 微信支付统一下单 |
+| GET | `/api/wechat/pay/sign` | 获取JSAPI调起签名 |
 
-### 首页（pages/home）
-- 自定义导航栏 + 用户头像
-- Hero 区域 + CTA 按钮
-- 活动 Banner（节日营销）
-- 分类网格（6大分类）
-- 精选案例横向滚动
-- 热门设计瀑布流
-- 自定义底部 TabBar
+### 设计方案
 
-### 设计器（pages/designer）⭐ 核心
-- 左侧工具栏（文字/图片/形状/贴纸）
-- CSS 绘制帆布袋预览区
-- 触摸拖拽元素（移动/缩放/旋转）
-- 右侧属性面板（颜色/字号/旋转/缩放/层级）
-- 文字输入弹窗（支持多字）
-- 图片上传（相册/拍照）
-- 模板选择弹窗
-- 撤销/重做历史
-- 保存设计 → 跳转预览
+| 方法 | 路径 | 说明 |
+|------|------|------|
+| POST | `/api/designs` | 创建设计方案 |
+| GET | `/api/designs` | 设计方案列表 |
+| GET | `/api/designs/:id` | 获取设计方案 |
+| PUT | `/api/designs/:id` | 更新设计方案 |
+| DELETE | `/api/designs/:id` | 删除设计方案 |
 
-### 预览下单（pages/preview）
-- 帆布袋正反面预览
-- 规格选择（尺寸/材质/印刷/手柄）
-- 数量选择 + 批量折扣提示
-- 实时价格计算
-- 配送信息展示
-- 底部下单栏
+### 订单
 
-### 订单追踪（pages/order）
-- Tab 切换（全部/待付款/生产中/已完成）
-- 订单卡片（订单号/规格/价格）
-- 生产状态时间轴
-- 订单操作（取消/查看物流/再次购买）
-- 模拟支付流程
+| 方法 | 路径 | 说明 |
+|------|------|------|
+| POST | `/api/orders` | 创建订单 |
+| GET | `/api/orders` | 订单列表 |
+| GET | `/api/orders/:id` | 订单详情 |
+| PATCH | `/api/orders/:id/status` | 更新订单状态（工厂回调）|
+| GET | `/api/orders/:id/logistics` | 物流查询 |
 
-### 个人中心（pages/profile）
-- 用户头像 + 昵称展示
-- 数据统计（设计/订单/优惠券）
-- 功能菜单（我的设计/订单/收藏/地址/企业通道/发票）
+### 文件上传
 
----
+| 方法 | 路径 | 说明 |
+|------|------|------|
+| POST | `/api/upload/image` | 单张图片上传 |
+| POST | `/api/upload/images` | 批量图片上传 |
 
-## 🎨 设计规范
-
-| 元素 | 规范 |
-|------|------|
-| 主色 | `#1A2B23` 深墨绿 |
-| 强调色 | `#C9A76C` 琥珀金 |
-| 背景 | `#FAFAFA` 极浅灰 |
-| 字体 | PingFang SC / Noto Sans SC |
-| 圆角 | 4-16px 系统 |
-| 阴影 | 克制的 4 层阴影体系 |
-
----
-
-## 🚀 本地开发
+## 快速开始
 
 ### 1. 安装依赖
-无需 npm，微信小程序原生开发无需额外依赖
 
-### 2. 配置 appid
-编辑 `project.config.json`，将 `appid` 替换为你的小程序 appid：
-```json
-"appid": "wxxxxxxxxx"
+```bash
+npm install
 ```
 
-### 3. 打开项目
-使用**微信开发者工具**，导入 `miniprogram/` 目录
+### 2. 配置环境变量
 
-### 4. 调试
-在微信开发者工具中：
-- 编译模式 → 预加载所有页面
-- 勾选"不校验合法域名"（开发阶段）
-- 使用"真机调试"测试相机/相册等 API
+```bash
+cp .env.example .env
+# 编辑 .env，填写真实配置
+```
 
----
+### 3. 数据库迁移
 
-## 🔧 后续开发（Phase 3）
+```bash
+# 方式A：本地数据库（需先安装PostgreSQL）
+npm run migrate
 
-- [ ] 接入真实后端 API（用户系统/订单系统/支付）
-- [ ] 微信支付真实接入（wx.requestPayment）
-- [ ] 腾讯云 COS 文件上传
-- [ ] Canvas 渲染导出设计稿（服务器端）
-- [ ] 微信登录获取 UnionID
-- [ ] 客服消息接入
-- [ ] 小程序码分享
-- [ ] 数据埋点（UV/转化率）
+# 方式B：Docker 一键启动
+docker-compose up -d
+```
 
----
+### 4. 启动服务
 
-## 📋 技术栈
+```bash
+# 开发环境
+npm run dev
 
-- 微信小程序原生开发（wxml/wxss/js）
-- 自定义组件系统
-- 微信登录 wx.getUserProfile
-- 微信支付 wx.requestPayment
-- wx.createSelectorQuery DOM 查询
-- 本地存储（wx.setStorageSync）
-- CSS 变量系统（WXSS）
+# 生产环境
+npm start
+```
 
----
+## 价格计算规则
 
-*本文档由 AI 驱动开发生成 · Phase 2*
+| 规格 | 说明 | 价格 |
+|------|------|------|
+| S码 | 30×35cm | 单面¥35 / 双面¥55 |
+| M码 | 35×40cm | 单面¥45 / 双面¥65 |
+| L码 | 40×45cm | 单面¥55 / 双面¥75 |
+| 棉麻材质 | | +¥10 |
+| 有机棉 | | +¥20 |
+| 长柄（斜挎）| | +¥5 |
+| 批量≥5件 | | 9折 |
+| 批量≥10件 | | 8折 |
+
+## 微信支付接入说明
+
+1. 在微信商户平台申请 V3 API 证书
+2. 将私钥配置到 `WX_PRIVATE_KEY`
+3. 配置支付回调地址 `${API_BASE}/api/wechat/pay/notify`
+
+## 部署到生产
+
+```bash
+# Railway 部署
+railway login
+railway init
+railway up
+
+# 或使用 Docker
+docker build -t daixiangyin-api .
+docker run -d -p 3000:3000 --env-file .env daixiangyin-api
+```
