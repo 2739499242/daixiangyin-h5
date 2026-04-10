@@ -1,78 +1,134 @@
-# 袋享印 H5 前端项目
+# 袋享印 · 微信小程序
 
-精工定制帆布袋在线设计平台前端项目，基于 Vue 3 + TypeScript + Vite 构建。
+> 帆布袋DIY定制小程序 · Phase 2 交付物
+> 版本：v1.0.0 | 日期：2026-04-10
 
-## 技术栈
+---
 
-- **框架**: Vue 3.4 + Composition API
-- **语言**: TypeScript 5.4
-- **构建**: Vite 5.2
-- **路由**: Vue Router 4
-- **状态**: Pinia 2
-- **样式**: SCSS
-- **画布**: Fabric.js 5
-
-## 开发
-
-```bash
-# 安装依赖
-pnpm install
-
-# 开发模式
-pnpm dev
-
-# 类型检查
-pnpm type-check
-
-# 代码检查
-pnpm lint
-
-# 测试
-pnpm test
-
-# 构建
-pnpm build
-```
-
-## 项目结构
+## 📦 项目结构
 
 ```
-frontend/
-├── src/
-│   ├── assets/       # 静态资源
-│   ├── components/   # 公共组件
-│   ├── views/        # 页面组件
-│   ├── stores/       # Pinia 状态管理
-│   ├── api/          # API 接口
-│   ├── utils/        # 工具函数
-│   ├── styles/       # 全局样式
-│   ├── router/       # 路由配置
-│   ├── App.vue       # 根组件
-│   └── main.ts       # 入口文件
-├── public/           # 静态资源
-├── .github/          # GitHub 配置
-├── package.json
-├── vite.config.ts
-└── tsconfig.json
+miniprogram/
+├── app.js              # 应用入口
+├── app.json            # 应用配置（页面路由/tabBar/权限）
+├── app.wxss            # 全局样式（CSS变量）
+├── components/         # 通用组件
+│   └── tabbar/         # 自定义底部导航栏
+├── pages/              # 页面
+│   ├── home/           # 首页
+│   ├── designer/       # 设计器（核心）
+│   ├── preview/        # 预览下单
+│   ├── order/          # 订单追踪
+│   └── profile/        # 个人中心
+├── utils/              # 工具函数
+├── assets/             # 静态资源
+└── project.config.json # 微信开发者工具配置
 ```
 
-## 环境变量
+---
 
-复制 `.env.example` 为 `.env.local` 并配置相关环境变量。
+## 🎯 页面功能
 
-## CI/CD
+### 首页（pages/home）
+- 自定义导航栏 + 用户头像
+- Hero 区域 + CTA 按钮
+- 活动 Banner（节日营销）
+- 分类网格（6大分类）
+- 精选案例横向滚动
+- 热门设计瀑布流
+- 自定义底部 TabBar
 
-项目使用 GitHub Actions 进行持续集成和部署：
+### 设计器（pages/designer）⭐ 核心
+- 左侧工具栏（文字/图片/形状/贴纸）
+- CSS 绘制帆布袋预览区
+- 触摸拖拽元素（移动/缩放/旋转）
+- 右侧属性面板（颜色/字号/旋转/缩放/层级）
+- 文字输入弹窗（支持多字）
+- 图片上传（相册/拍照）
+- 模板选择弹窗
+- 撤销/重做历史
+- 保存设计 → 跳转预览
 
-- **main 分支**: 自动部署到生产环境
-- **develop 分支**: 自动部署到预发布环境
-- **PR**: 自动部署预览版本
+### 预览下单（pages/preview）
+- 帆布袋正反面预览
+- 规格选择（尺寸/材质/印刷/手柄）
+- 数量选择 + 批量折扣提示
+- 实时价格计算
+- 配送信息展示
+- 底部下单栏
 
-需要配置以下 Secrets：
-- `VERCEL_TOKEN`: Vercel 访问令牌
-- `VERCEL_ORG_ID`: Vercel 组织 ID
-- `VERCEL_PROJECT_ID`: Vercel 项目 ID
+### 订单追踪（pages/order）
+- Tab 切换（全部/待付款/生产中/已完成）
+- 订单卡片（订单号/规格/价格）
+- 生产状态时间轴
+- 订单操作（取消/查看物流/再次购买）
+- 模拟支付流程
 
-## License
+### 个人中心（pages/profile）
+- 用户头像 + 昵称展示
+- 数据统计（设计/订单/优惠券）
+- 功能菜单（我的设计/订单/收藏/地址/企业通道/发票）
 
-MIT
+---
+
+## 🎨 设计规范
+
+| 元素 | 规范 |
+|------|------|
+| 主色 | `#1A2B23` 深墨绿 |
+| 强调色 | `#C9A76C` 琥珀金 |
+| 背景 | `#FAFAFA` 极浅灰 |
+| 字体 | PingFang SC / Noto Sans SC |
+| 圆角 | 4-16px 系统 |
+| 阴影 | 克制的 4 层阴影体系 |
+
+---
+
+## 🚀 本地开发
+
+### 1. 安装依赖
+无需 npm，微信小程序原生开发无需额外依赖
+
+### 2. 配置 appid
+编辑 `project.config.json`，将 `appid` 替换为你的小程序 appid：
+```json
+"appid": "wxxxxxxxxx"
+```
+
+### 3. 打开项目
+使用**微信开发者工具**，导入 `miniprogram/` 目录
+
+### 4. 调试
+在微信开发者工具中：
+- 编译模式 → 预加载所有页面
+- 勾选"不校验合法域名"（开发阶段）
+- 使用"真机调试"测试相机/相册等 API
+
+---
+
+## 🔧 后续开发（Phase 3）
+
+- [ ] 接入真实后端 API（用户系统/订单系统/支付）
+- [ ] 微信支付真实接入（wx.requestPayment）
+- [ ] 腾讯云 COS 文件上传
+- [ ] Canvas 渲染导出设计稿（服务器端）
+- [ ] 微信登录获取 UnionID
+- [ ] 客服消息接入
+- [ ] 小程序码分享
+- [ ] 数据埋点（UV/转化率）
+
+---
+
+## 📋 技术栈
+
+- 微信小程序原生开发（wxml/wxss/js）
+- 自定义组件系统
+- 微信登录 wx.getUserProfile
+- 微信支付 wx.requestPayment
+- wx.createSelectorQuery DOM 查询
+- 本地存储（wx.setStorageSync）
+- CSS 变量系统（WXSS）
+
+---
+
+*本文档由 AI 驱动开发生成 · Phase 2*

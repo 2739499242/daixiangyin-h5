@@ -1,0 +1,58 @@
+{
+  "name": "袋享印",
+  "version": "1.0.0",
+  "description": "帆布袋DIY定制小程序",
+  "appid": "__UNI__DAIXIANGYIN",
+  "launchPath": "pages/home/index",
+  "pages": [
+    "pages/home/index",
+    "pages/designer/index",
+    "pages/preview/index",
+    "pages/order/index",
+    "pages/profile/index"
+  ],
+  "window": {
+    "navigationBarBackgroundColor": "#FFFFFF",
+    "navigationBarTextStyle": "black",
+    "navigationBarTitleText": "袋享印",
+    "navigationStyle": "custom",
+    "backgroundColor": "#FAFAFA",
+    "backgroundTextStyle": "dark",
+    "enablePullDownRefresh": false,
+    "onReachBottomDistance": 50
+  },
+  "tabBar": {
+    "custom": true,
+    "color": "#9E9E9E",
+    "selectedColor": "#1A2B23",
+    "backgroundColor": "#FFFFFF",
+    "borderStyle": "white",
+    "list": [
+      {
+        "pagePath": "pages/home/index",
+        "text": "首页"
+      },
+      {
+        "pagePath": "pages/designer/index",
+        "text": "设计"
+      },
+      {
+        "pagePath": "pages/order/index",
+        "text": "订单"
+      },
+      {
+        "pagePath": "pages/profile/index",
+        "text": "我的"
+      }
+    ]
+  },
+  "permission": {
+    "scope.userLocation": {
+      "desc": "用于确认收货地址"
+    }
+  },
+  "requiredPrivateInfos": ["getLocation"],
+  "usingComponents": {},
+  "style": "v2",
+  "sitemapLocation": "sitemap.json"
+}
