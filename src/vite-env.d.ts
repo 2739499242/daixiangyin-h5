@@ -5,12 +5,7 @@ interface ImportMetaEnv {
   readonly VITE_API_TIMEOUT: string
   readonly VITE_WECHAT_APP_ID: string
   readonly VITE_TENCENT_CLOUD_SECRET_ID: string
-  readonly VITE_TENCENT_CLOUD_SECRET_KEY: string
   readonly VITE_TENCENT_CLOUD_REGION: string
-  readonly VITE_AI_SERVICE: string
-  readonly VITE_AI_MODEL: string
-  readonly VITE_ENABLE_ANALYTICS: string
-  readonly VITE_ENABLE_ERROR_REPORT: string
 }
 
 interface ImportMeta {
