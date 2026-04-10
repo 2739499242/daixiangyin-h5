@@ -1,0 +1,20 @@
+<!-- components/tabbar/index.wxml -->
+<cover-view class="tabbar">
+  <cover-view class="tabbar__safe" style="height: {{safeArea}}px;"></cover-view>
+  <cover-view class="tabbar__inner">
+    <cover-view
+      wx:for="{{list}}"
+      wx:key="path"
+      class="tabbar__item {{active === index ? 'tabbar__item--active' : ''}}"
+      data-index="{{index}}"
+      bindtap="switchTab"
+    >
+      <cover-image
+        class="tabbar__icon"
+        src="{{active === index ? item.selectedIconPath : item.iconPath}}"
+        mode="aspectFit"
+      />
+      <cover-view class="tabbar__label">{{item.text}}</cover-view>
+    </cover-view>
+  </cover-view>
+</cover-view>
