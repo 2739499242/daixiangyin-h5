@@ -1,0 +1,160 @@
+<!-- pages/home/index.wxml -->
+<view class="page-home">
+
+  <!-- 自定义导航栏 -->
+  <view class="nav-bar" style="padding-top: {{statusBarHeight}}px;">
+    <view class="nav-bar__inner">
+      <view class="nav-bar__logo">
+        <text class="nav-bar__brand">袋享印</text>
+        <view class="nav-bar__divider"></view>
+        <text class="nav-bar__tagline">精工定制</text>
+      </view>
+      <view class="nav-bar__actions">
+        <view class="nav-bar__search-btn" bindtap="onSearch">
+          <image src="/assets/icons/search.png" mode="aspectFit" class="nav-bar__icon" />
+        </view>
+        <open-data type="userAvatarUrl" class="nav-bar__avatar"></open-data>
+      </view>
+    </view>
+  </view>
+
+  <!-- Hero 区域 -->
+  <view class="hero">
+    <view class="hero__content">
+      <text class="hero__badge">NEW</text>
+      <text class="hero__title">做独一无二的帆布袋</text>
+      <text class="hero__subtitle">3分钟完成设计 · 72小时快反交付</text>
+      <view class="hero__cta btn btn-accent" bindtap="onStartDesign">
+        <text>开始定制</text>
+        <view class="hero__cta-arrow">→</view>
+      </view>
+      <view class="hero__stats">
+        <view class="hero__stat">
+          <text class="hero__stat-num">387万+</text>
+          <text class="hero__stat-label">用户信赖</text>
+        </view>
+        <view class="hero__stat-divider"></view>
+        <view class="hero__stat">
+          <text class="hero__stat-num">4.9</text>
+          <text class="hero__stat-label">用户评分</text>
+        </view>
+        <view class="hero__stat-divider"></view>
+        <view class="hero__stat">
+          <text class="hero__stat-num">72h</text>
+          <text class="hero__stat-label">闪电交付</text>
+        </view>
+      </view>
+    </view>
+    <view class="hero__visual">
+      <view class="hero__bag">
+        <image src="/assets/images/bag-hero.png" mode="aspectFit" class="hero__bag-img" />
+      </view>
+      <view class="hero__floating hero__floating--1">
+        <text>🎨</text>
+        <text class="hero__floating-text">DIY定制</text>
+      </view>
+      <view class="hero__floating hero__floating--2">
+        <text>📦</text>
+        <text class="hero__floating-text">1件起订</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 活动 Banner -->
+  <view class="section">
+    <view class="banner">
+      <view class="banner__content">
+        <text class="banner__title">🌸 母亲节限定</text>
+        <text class="banner__subtitle">为妈妈定制一份独一无二的礼物</text>
+        <view class="banner__tag">限时优惠</view>
+      </view>
+      <view class="banner__cta" bindtap="onStartDesign">
+        <text>立即设计</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 分类入口 -->
+  <view class="section">
+    <view class="section__header">
+      <text class="section__title">探索风格</text>
+      <text class="section__more" bindtap="onMoreCategories">查看全部 ›</text>
+    </view>
+    <view class="category-grid">
+      <view
+        wx:for="{{categories}}"
+        wx:key="id"
+        class="category-card"
+        data-id="{{item.id}}"
+        bindtap="onCategoryTap"
+      >
+        <view class="category-card__icon">{{item.icon}}</view>
+        <text class="category-card__name">{{item.name}}</text>
+        <text class="category-card__count">{{item.count}}个模板</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 精选案例 -->
+  <view class="section">
+    <view class="section__header">
+      <text class="section__title">精选案例</text>
+      <text class="section__more" bindtap="onMoreCases">更多 ›</text>
+    </view>
+    <scroll-view class="cases-scroll" scroll-x enable-flex>
+      <view
+        wx:for="{{cases}}"
+        wx:key="id"
+        class="case-card"
+        data-id="{{item.id}}"
+        bindtap="onCaseTap"
+      >
+        <image src="{{item.image}}" mode="aspectFill" class="case-card__img" />
+        <view class="case-card__info">
+          <text class="case-card__name truncate">{{item.name}}</text>
+          <text class="case-card__author">by {{item.author}}</text>
+        </view>
+        <view class="case-card__like">
+          <text>♥</text>
+          <text>{{item.likes}}</text>
+        </view>
+      </view>
+    </scroll-view>
+  </view>
+
+  <!-- 热门设计 -->
+  <view class="section">
+    <view class="section__header">
+      <text class="section__title">🔥 热门设计</text>
+    </view>
+    <view class="hot-grid">
+      <view
+        wx:for="{{hotDesigns}}"
+        wx:key="id"
+        class="hot-card"
+        data-id="{{item.id}}"
+        bindtap="onDesignTap"
+      >
+        <image src="{{item.image}}" mode="aspectFill" class="hot-card__img" />
+        <view class="hot-card__overlay">
+          <text class="hot-card__title truncate">{{item.name}}</text>
+          <view class="hot-card__meta">
+            <text>¥{{item.price}}</text>
+            <view class="hot-card__use">
+              <text>🔥</text>
+              <text>{{item.uses}}人使用</text>
+            </view>
+          </view>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 底部留白 -->
+  <view style="height: 100px;"></view>
+
+  <!-- 自定义 TabBar -->
+  <import src="/components/tabbar/index.wxml" />
+  <template is="tabbar" data="{{active: 0, safeArea: safeAreaBottom}}" />
+
+</view>

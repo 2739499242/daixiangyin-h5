@@ -1,0 +1,95 @@
+<!-- pages/order/index.wxml -->
+<view class="page-order">
+
+  <!-- 顶部导航 -->
+  <view class="order-nav" style="padding-top: {{statusBarHeight}}px;">
+    <view class="order-nav__back" bindtap="onBack">
+      <text>←</text>
+    </view>
+    <text class="order-nav__title">我的订单</text>
+    <view style="width: 40px;"></view>
+  </view>
+
+  <!-- Tab 切换 -->
+  <view class="order-tabs">
+    <view
+      wx:for="{{tabs}}"
+      wx:key="value"
+      class="order-tab {{activeTab === item.value ? 'order-tab--active' : ''}}"
+      data-value="{{item.value}}"
+      bindtap="onTabChange"
+    >
+      <text>{{item.label}}</text>
+    </view>
+  </view>
+
+  <!-- 订单列表 -->
+  <view class="order-list">
+    <!-- 空状态 -->
+    <view wx:if="{{orderList.length === 0}}" class="empty-state">
+      <view class="empty-state__icon">📦</view>
+      <text class="empty-state__text">暂无相关订单</text>
+      <view class="btn btn-primary" style="margin-top: 12px;" bindtap="onStartDesign">
+        <text>开始设计</text>
+      </view>
+    </view>
+
+    <!-- 订单卡片 -->
+    <view
+      wx:for="{{orderList}}"
+      wx:key="id"
+      class="order-card"
+      data-id="{{item.id}}"
+      bindtap="onOrderDetail"
+    >
+      <view class="order-card__header">
+        <text class="order-card__no">订单号: {{item.orderNo}}</text>
+        <text class="order-card__status status--{{item.status}}">{{item.statusText}}</text>
+      </view>
+
+      <!-- 产品信息 -->
+      <view class="order-card__product">
+        <image src="{{item.thumbnail || '/assets/images/bag-thumb.png'}}" mode="aspectFill" class="order-card__img" />
+        <view class="order-card__info">
+          <text class="order-card__name">袋享印 · 定制帆布袋</text>
+          <text class="order-card__specs">{{item.specsDesc}}</text>
+          <view class="order-card__meta">
+            <text class="order-card__qty">×{{item.quantity}}</text>
+            <text class="order-card__price">¥{{item.price}}</text>
+          </view>
+        </view>
+      </view>
+
+      <!-- 状态时间轴 -->
+      <view class="order-card__timeline" wx:if="{{item.showTimeline}}">
+        <view
+          wx:for="{{item.timeline}}"
+          wx:for-item="step"
+          wx:key="label"
+          class="timeline-step {{step.done ? 'timeline-step--done' : ''}} {{step.current ? 'timeline-step--current' : ''}}"
+        >
+          <view class="timeline-step__dot"></view>
+          <text class="timeline-step__label">{{step.label}}</text>
+        </view>
+      </view>
+
+      <!-- 操作按钮 -->
+      <view class="order-card__actions">
+        <view wx:if="{{item.status === 'paid'}}" class="btn btn-ghost btn-sm" bindtap="onCancelOrder" data-id="{{item.id}}">
+          <text>取消订单</text>
+        </view>
+        <view wx:if="{{item.status === 'shipped'}}" class="btn btn-secondary btn-sm" data-id="{{item.id}}">
+          <text>查看物流</text>
+        </view>
+        <view wx:if="{{item.status === 'delivered'}}" class="btn btn-primary btn-sm" data-id="{{item.id}}">
+          <text>再次购买</text>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 自定义 TabBar -->
+  <import src="/components/tabbar/index.wxml" />
+  <template is="tabbar" data="{{active: 2, safeArea: safeAreaBottom}}" />
+
+</view>

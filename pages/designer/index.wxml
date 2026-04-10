@@ -1,0 +1,203 @@
+<!-- pages/designer/index.wxml -->
+<view class="designer" style="padding-top: {{statusBarHeight}}px;">
+
+  <!-- 顶部导航 -->
+  <view class="designer__header">
+    <view class="designer__header-left">
+      <view class="designer__back" bindtap="onBack">
+        <text>←</text>
+      </view>
+      <text class="designer__title">设计</text>
+    </view>
+    <view class="designer__header-right">
+      <view class="designer__action" bindtap="onUndo">
+        <text class="{{canUndo ? '' : 'disabled'}}">↶</text>
+      </view>
+      <view class="designer__action" bindtap="onRedo">
+        <text class="{{canRedo ? '' : 'disabled'}}">↷</text>
+      </view>
+      <view class="designer__action designer__action--save" bindtap="onSave">
+        <text>保存</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 工具栏 -->
+  <view class="toolbar">
+    <view
+      wx:for="{{tools}}"
+      wx:key="id"
+      class="toolbar__item {{activeTool === item.id ? 'toolbar__item--active' : ''}}"
+      data-id="{{item.id}}"
+      bindtap="onSelectTool"
+    >
+      <text class="toolbar__icon">{{item.icon}}</text>
+      <text class="toolbar__label">{{item.name}}</text>
+    </view>
+  </view>
+
+  <!-- 画布区域 -->
+  <view class="designer__body">
+    <view class="canvas-wrapper">
+      <!-- 帆布袋背景（CSS绘制） -->
+      <view class="bag-container">
+        <!-- 手柄左 -->
+        <view class="bag-handle bag-handle--left"></view>
+        <!-- 手柄右 -->
+        <view class="bag-handle bag-handle--right"></view>
+        <!-- 袋子主体 -->
+        <view class="bag-body">
+          <!-- 袋口 -->
+          <view class="bag-top"></view>
+          <!-- 印刷区域 -->
+          <view class="print-area">
+            <!-- 元素列表 -->
+            <block wx:for="{{elements}}" wx:key="id">
+              <view
+                class="element {{item.id === selectedId ? 'element--selected' : ''}}"
+                data-id="{{item.id}}"
+                bindtouchstart="onElementTouchStart"
+                bindtouchmove="onElementTouchMove"
+                bindtouchend="onElementTouchEnd"
+                style="left: {{item.x}}px; top: {{item.y}}px; transform: rotate({{item.rotate}}deg) scale({{item.scale}});"
+              >
+                <block wx:if="{{item.type === 'text'}}">
+                  <text
+                    class="element__text"
+                    style="color: {{item.color}}; font-size: {{item.fontSize}}px; font-family: '{{item.fontFamily}}'; font-weight: {{item.bold ? 'bold' : 'normal'}}; font-style: {{item.italic ? 'italic' : 'normal'}};"
+                  >{{item.content}}</text>
+                </block>
+                <block wx:elif="{{item.type === 'image'}}">
+                  <image src="{{item.src}}" class="element__image" style="width: {{item.width}}px; height: {{item.height}}px;" mode="aspectFill" />
+                </block>
+                <block wx:elif="{{item.type === 'shape'}}">
+                  <view class="element__shape element__shape--{{item.shape}}" style="background: {{item.color}}; width: {{item.width}}px; height: {{item.height}}px;"></view>
+                </block>
+                <!-- 删除按钮 -->
+                <view wx:if="{{item.id === selectedId}}" class="element__delete" data-id="{{item.id}}" catchtap="onDeleteElement">×</view>
+              </view>
+            </block>
+            <!-- 空状态 -->
+            <view wx:if="{{elements.length === 0}}" class="canvas-empty">
+              <text class="canvas-empty__text">点击下方工具添加元素</text>
+            </view>
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <!-- 属性面板 -->
+    <view class="panel" wx:if="{{selectedElement}}">
+      <view class="panel__section">
+        <text class="panel__label">颜色</text>
+        <view class="color-swatches">
+          <view
+            wx:for="{{colors}}"
+            wx:key="index"
+            class="color-swatch {{selectedElement.color === item ? 'color-swatch--active' : ''}}"
+            style="background: {{item}};"
+            data-color="{{item}}"
+            bindtap="onColorChange"
+          ></view>
+        </view>
+      </view>
+
+      <view class="panel__section" wx:if="{{selectedElement.type === 'text'}}">
+        <text class="panel__label">字号</text>
+        <view class="font-sizes">
+          <view
+            wx:for="{{fontSizes}}"
+            wx:key="index"
+            class="font-size-btn {{selectedElement.fontSize === item ? 'font-size-btn--active' : ''}}"
+            data-size="{{item}}"
+            bindtap="onFontSizeChange"
+          >{{item}}</view>
+        </view>
+      </view>
+
+      <view class="panel__section">
+        <text class="panel__label">旋转</text>
+        <slider min="0" max="360" value="{{selectedElement.rotate}}" bindchange="onRotateChange" class="panel__slider" block-size="18" activeColor="#C9A76C" />
+      </view>
+
+      <view class="panel__section">
+        <text class="panel__label">缩放</text>
+        <slider min="50" max="300" value="{{selectedElement.scale * 100}}" bindchange="onScaleChange" class="panel__slider" block-size="18" activeColor="#C9A76C" />
+      </view>
+
+      <view class="panel__section">
+        <view class="panel__layer">
+          <text class="panel__label">层级</text>
+          <view class="panel__layer-btns">
+            <view class="panel__layer-btn" bindtap="onBringForward">↑ 上一层</view>
+            <view class="panel__layer-btn" bindtap="onSendBackward">↓ 下一层</view>
+          </view>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 底部工具栏 -->
+  <view class="designer__footer">
+    <view class="designer__footer-tools">
+      <view class="footer-tool" bindtap="onSelectTemplate">
+        <text>📋</text>
+        <text class="footer-tool__label">模板</text>
+      </view>
+      <view class="footer-tool" bindtap="onPreview">
+        <text>👁</text>
+        <text class="footer-tool__label">预览</text>
+      </view>
+      <view class="footer-tool footer-tool--primary" bindtap="onOrder">
+        <text>立即下单</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 文字输入弹窗 -->
+  <view class="modal-overlay {{showTextModal ? 'modal-overlay--show' : ''}}" bindtap="onCloseTextModal">
+    <view class="text-modal" catchtap="">
+      <text class="text-modal__title">添加文字</text>
+      <textarea class="text-modal__input" placeholder="输入文字..." value="{{textInput}}" bindinput="onTextInput" maxlength="50" auto-focus></textarea>
+      <view class="text-modal__preview" wx:if="{{textInput}}">
+        <text style="color: {{textColor}}; font-size: {{textFontSize}}px;">{{textInput}}</text>
+      </view>
+      <view class="text-modal__actions">
+        <view class="btn btn-secondary" bindtap="onCloseTextModal">取消</view>
+        <view class="btn btn-primary" bindtap="onConfirmText">确认添加</view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 图片上传弹窗 -->
+  <view class="modal-overlay {{showImageModal ? 'modal-overlay--show' : ''}}" bindtap="onCloseImageModal">
+    <view class="action-sheet" catchtap="">
+      <view class="action-sheet__item" bindtap="onChooseImage">从相册选择</view>
+      <view class="action-sheet__item" bindtap="onTakePhoto">拍照上传</view>
+      <view class="action-sheet__cancel" bindtap="onCloseImageModal">取消</view>
+    </view>
+  </view>
+
+  <!-- 模板选择弹窗 -->
+  <view class="modal-overlay {{showTemplateModal ? 'modal-overlay--show' : ''}}" bindtap="onCloseTemplateModal">
+    <view class="template-modal" catchtap="">
+      <view class="template-modal__header">
+        <text class="template-modal__title">选择模板</text>
+        <text class="template-modal__close" bindtap="onCloseTemplateModal">×</text>
+      </view>
+      <scroll-view scroll-y class="template-modal__list">
+        <view class="template-grid">
+          <view wx:for="{{templates}}" wx:key="id" class="template-item" data-id="{{item.id}}" bindtap="onApplyTemplate">
+            <image src="{{item.image}}" mode="aspectFill" class="template-item__img" />
+            <text class="template-item__name">{{item.name}}</text>
+          </view>
+        </view>
+      </scroll-view>
+    </view>
+  </view>
+
+  <!-- 自定义 TabBar -->
+  <import src="/components/tabbar/index.wxml" />
+  <template is="tabbar" data="{{active: 1, safeArea: safeAreaBottom}}" />
+
+</view>

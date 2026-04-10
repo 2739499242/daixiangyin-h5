@@ -1,0 +1,224 @@
+<!-- pages/preview/index.wxml -->
+<view class="page-preview">
+
+  <!-- 顶部导航 -->
+  <view class="preview-nav" style="padding-top: {{statusBarHeight}}px;">
+    <view class="preview-nav__back" bindtap="onBack">
+      <text>←</text>
+    </view>
+    <text class="preview-nav__title">确认订单</text>
+    <view style="width: 40px;"></view>
+  </view>
+
+  <!-- 产品预览 -->
+  <view class="preview-section">
+    <view class="product-preview">
+      <!-- 帆布袋展示 -->
+      <view class="bag-preview">
+        <view class="bag-preview__front" wx:if="{{activeSide === 'front'}}">
+          <image src="/assets/images/bag-front.png" mode="aspectFit" class="bag-preview__img" />
+          <!-- 设计叠加 -->
+          <view class="bag-preview__design">
+            <block wx:for="{{designElements}}" wx:key="id">
+              <text
+                wx:if="{{item.type === 'text'}}"
+                class="design-text"
+                style="color: {{item.color}}; font-size: {{item.fontSize * 0.7}}px; left: {{item.x * 0.8 + 30}}px; top: {{item.y * 0.8 + 20}}px; transform: rotate({{item.rotate}}deg) scale({{item.scale * 0.8}});"
+              >{{item.content}}</text>
+            </block>
+          </view>
+        </view>
+        <view class="bag-preview__back" wx:if="{{activeSide === 'back'}}">
+          <image src="/assets/images/bag-back.png" mode="aspectFit" class="bag-preview__img" />
+        </view>
+      </view>
+
+      <!-- 切换正反面 -->
+      <view class="side-switch">
+        <view
+          class="side-btn {{activeSide === 'front' ? 'side-btn--active' : ''}}"
+          bindtap="onSwitchSide"
+          data-side="front"
+        >正面</view>
+        <view
+          class="side-btn {{activeSide === 'back' ? 'side-btn--active' : ''}}"
+          bindtap="onSwitchSide"
+          data-side="back"
+        >背面</view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 规格选择 -->
+  <view class="preview-section">
+    <text class="section-title">选择规格</text>
+
+    <!-- 尺寸 -->
+    <view class="spec-group">
+      <text class="spec-label">尺寸</text>
+      <view class="spec-options">
+        <view
+          wx:for="{{sizeOptions}}"
+          wx:key="value"
+          class="spec-option {{selectedSpecs.size === item.value ? 'spec-option--active' : ''}}"
+          data-key="size"
+          data-value="{{item.value}}"
+          bindtap="onSpecChange"
+        >
+          <text class="spec-option__label">{{item.label}}</text>
+          <text class="spec-option__sub">{{item.desc}}</text>
+        </view>
+      </view>
+    </view>
+
+    <!-- 材质 -->
+    <view class="spec-group">
+      <text class="spec-label">材质</text>
+      <view class="spec-options">
+        <view
+          wx:for="{{materialOptions}}"
+          wx:key="value"
+          class="spec-option {{selectedSpecs.material === item.value ? 'spec-option--active' : ''}}"
+          data-key="material"
+          data-value="{{item.value}}"
+          bindtap="onSpecChange"
+        >
+          <text class="spec-option__label">{{item.label}}</text>
+          <text class="spec-option__sub">{{item.addon}}</text>
+        </view>
+      </view>
+    </view>
+
+    <!-- 印刷 -->
+    <view class="spec-group">
+      <text class="spec-label">印刷方式</text>
+      <view class="spec-options spec-options--row">
+        <view
+          class="spec-option {{selectedSpecs.printSide === 'single' ? 'spec-option--active' : ''}}"
+          data-key="printSide"
+          data-value="single"
+          bindtap="onSpecChange"
+        >
+          <text class="spec-option__label">单面印刷</text>
+          <text class="spec-option__sub">仅正面</text>
+        </view>
+        <view
+          class="spec-option {{selectedSpecs.printSide === 'double' ? 'spec-option--active' : ''}}"
+          data-key="printSide"
+          data-value="double"
+          bindtap="onSpecChange"
+        >
+          <text class="spec-option__label">双面印刷</text>
+          <text class="spec-option__sub">正反两面</text>
+        </view>
+      </view>
+    </view>
+
+    <!-- 手柄 -->
+    <view class="spec-group">
+      <text class="spec-label">手柄</text>
+      <view class="spec-options spec-options--row">
+        <view
+          class="spec-option {{selectedSpecs.handle === 'short' ? 'spec-option--active' : ''}}"
+          data-key="handle"
+          data-value="short"
+          bindtap="onSpecChange"
+        >
+          <text class="spec-option__label">短柄</text>
+          <text class="spec-option__sub">经典款</text>
+        </view>
+        <view
+          class="spec-option {{selectedSpecs.handle === 'long' ? 'spec-option--active' : ''}}"
+          data-key="handle"
+          data-value="long"
+          bindtap="onSpecChange"
+        >
+          <text class="spec-option__label">长柄</text>
+          <text class="spec-option__sub">可斜挎</text>
+        </view>
+      </view>
+    </view>
+
+    <!-- 数量 -->
+    <view class="spec-group spec-group--quantity">
+      <text class="spec-label">数量</text>
+      <view class="quantity-ctrl">
+        <view class="quantity-btn {{quantity <= 1 ? 'quantity-btn--disabled' : ''}}" bindtap="onDecreaseQty">−</view>
+        <input
+          class="quantity-input"
+          type="number"
+          value="{{quantity}}"
+          bindchange="onQuantityChange"
+          min="1"
+          max="999"
+        />
+        <view class="quantity-btn" bindtap="onIncreaseQty">+</view>
+      </view>
+      <view class="quantity-tip">
+        <text wx:if="{{quantity >= 10}}">已享8折优惠</text>
+        <text wx:elif="{{quantity >= 5}}">已享9折优惠</text>
+        <text wx:else>5件起享批量折扣</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 价格信息 -->
+  <view class="preview-section">
+    <text class="section-title">费用明细</text>
+    <view class="price-breakdown">
+      <view class="price-row">
+        <text>单价</text>
+        <text>¥{{priceInfo.unitPrice}}</text>
+      </view>
+      <view class="price-row">
+        <text>数量</text>
+        <text>× {{quantity}}</text>
+      </view>
+      <view class="price-row" wx:if="{{quantity >= 5}}">
+        <text class="price-discount">批量折扣</text>
+        <text class="price-discount">-{{quantity >= 10 ? '20%' : '10%'}}</text>
+      </view>
+      <view class="price-divider"></view>
+      <view class="price-row price-row--total">
+        <text>合计</text>
+        <text class="price-total">¥{{priceInfo.totalPrice}}</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 配送信息 -->
+  <view class="preview-section">
+    <text class="section-title">配送信息</text>
+    <view class="delivery-info">
+      <view class="delivery-row">
+        <text class="delivery-icon">🚚</text>
+        <view class="delivery-content">
+          <text class="delivery-title">72小时快反交付</text>
+          <text class="delivery-desc">付款后72小时内生产并发货</text>
+        </view>
+      </view>
+      <view class="delivery-row">
+        <text class="delivery-icon">📦</text>
+        <view class="delivery-content">
+          <text class="delivery-title">精美包装</text>
+          <text class="delivery-desc">每只袋子独立包装，含品牌卡片</text>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 底部占位 -->
+  <view style="height: 90px;"></view>
+
+  <!-- 底部下单栏 -->
+  <view class="order-bar">
+    <view class="order-bar__price">
+      <text class="order-bar__total">¥{{priceInfo.totalPrice}}</text>
+      <text class="order-bar__original">¥{{(priceInfo.unitPrice * quantity * 1.2).toFixed(2)}}</text>
+    </view>
+    <view class="btn btn-accent order-bar__btn" bindtap="onSubmitOrder">
+      <text>确认下单</text>
+    </view>
+  </view>
+
+</view>
