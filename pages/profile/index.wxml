@@ -1,0 +1,147 @@
+<!-- pages/profile/index.wxml -->
+<view class="page-profile">
+
+  <!-- 用户信息卡片 -->
+  <view class="profile-header" style="padding-top: {{statusBarHeight}}px;">
+    <view class="profile-header__bg"></view>
+    <view class="profile-card">
+      <view class="profile-card__avatar" bindtap="onLogin">
+        <open-data type="userAvatarUrl" class="profile-card__avatar-img" wx:if="{{hasLogin}}"></open-data>
+        <image wx:else src="/assets/images/avatar-default.png" class="profile-card__avatar-img" mode="aspectFill" />
+      </view>
+      <view class="profile-card__info">
+        <open-data type="userNickName" class="profile-card__name" wx:if="{{hasLogin}}"></open-data>
+        <text wx:else class="profile-card__name" bindtap="onLogin">点击授权登录</text>
+        <text class="profile-card__level">⭐ 袋享银卡会员</text>
+      </view>
+      <view class="profile-card__stats">
+        <view class="stat-item">
+          <text class="stat-item__num">{{stats.designs}}</text>
+          <text class="stat-item__label">我的设计</text>
+        </view>
+        <view class="stat-divider"></view>
+        <view class="stat-item">
+          <text class="stat-item__num">{{stats.orders}}</text>
+          <text class="stat-item__label">我的订单</text>
+        </view>
+        <view class="stat-divider"></view>
+        <view class="stat-item">
+          <text class="stat-item__num">{{stats.coupons}}</text>
+          <text class="stat-item__label">优惠券</text>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 功能列表 -->
+  <view class="profile-section">
+    <!-- 我的资产 -->
+    <view class="menu-card">
+      <view class="menu-row menu-row--highlight" bindtap="onMyDesigns">
+        <view class="menu-row__icon">🎨</view>
+        <text class="menu-row__label">我的设计</text>
+        <view class="menu-row__right">
+          <text class="menu-row__badge">查看全部</text>
+          <text class="menu-row__arrow">›</text>
+        </view>
+      </view>
+      <view class="menu-divider"></view>
+      <view class="menu-row menu-row--highlight" bindtap="onMyOrders">
+        <view class="menu-row__icon">📦</view>
+        <text class="menu-row__label">我的订单</text>
+        <view class="menu-row__right">
+          <text class="menu-row__badge">查看全部</text>
+          <text class="menu-row__arrow">›</text>
+        </view>
+      </view>
+      <view class="menu-divider"></view>
+      <view class="menu-row menu-row--highlight" bindtap="onMyFavorites">
+        <view class="menu-row__icon">❤️</view>
+        <text class="menu-row__label">我的收藏</text>
+        <view class="menu-row__right">
+          <text class="menu-row__arrow">›</text>
+        </view>
+      </view>
+      <view class="menu-divider"></view>
+      <view class="menu-row menu-row--highlight" bindtap="onCoupons">
+        <view class="menu-row__icon">🎫</view>
+        <text class="menu-row__label">优惠券</text>
+        <view class="menu-row__right">
+          <text class="menu-row__count">{{availableCoupons}}张可用</text>
+          <text class="menu-row__arrow">›</text>
+        </view>
+      </view>
+    </view>
+
+    <!-- 收货管理 -->
+    <view class="menu-card">
+      <view class="menu-card__title">收货管理</view>
+      <view class="menu-row menu-row--highlight" bindtap="onAddresses">
+        <view class="menu-row__icon">📍</view>
+        <text class="menu-row__label">收货地址</text>
+        <view class="menu-row__right">
+          <text class="menu-row__arrow">›</text>
+        </view>
+      </view>
+    </view>
+
+    <!-- 企业通道 -->
+    <view class="menu-card">
+      <view class="menu-card__title">企业服务</view>
+      <view class="menu-row menu-row--highlight" bindtap="onBusiness">
+        <view class="menu-row__icon">🏢</view>
+        <text class="menu-row__label">企业定制通道</text>
+        <view class="menu-row__right">
+          <text class="menu-row__tag">专属优惠</text>
+          <text class="menu-row__arrow">›</text>
+        </view>
+      </view>
+      <view class="menu-divider"></view>
+      <view class="menu-row menu-row--highlight" bindtap="onInvoices">
+        <view class="menu-row__icon">🧾</view>
+        <text class="menu-row__label">发票申请</text>
+        <view class="menu-row__right">
+          <text class="menu-row__arrow">›</text>
+        </view>
+      </view>
+    </view>
+
+    <!-- 其他 -->
+    <view class="menu-card">
+      <view class="menu-row menu-row--highlight" bindtap="onService">
+        <view class="menu-row__icon">💬</view>
+        <text class="menu-row__label">在线客服</text>
+        <view class="menu-row__right">
+          <text class="menu-row__arrow">›</text>
+        </view>
+      </view>
+      <view class="menu-divider"></view>
+      <view class="menu-row menu-row--highlight" bindtap="onHelp">
+        <view class="menu-row__icon">❓</view>
+        <text class="menu-row__label">帮助中心</text>
+        <view class="menu-row__right">
+          <text class="menu-row__arrow">›</text>
+        </view>
+      </view>
+      <view class="menu-divider"></view>
+      <view class="menu-row menu-row--highlight" bindtap="onAbout">
+        <view class="menu-row__icon">ℹ️</view>
+        <text class="menu-row__label">关于我们</text>
+        <view class="menu-row__right">
+          <text class="menu-row__arrow">›</text>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 底部版权 -->
+  <view class="profile-footer">
+    <text class="profile-footer__text">袋享印 · 精工定制，品味随行</text>
+    <text class="profile-footer__version">v1.0.0</text>
+  </view>
+
+  <!-- 自定义 TabBar -->
+  <import src="/components/tabbar/index.wxml" />
+  <template is="tabbar" data="{{active: 3, safeArea: safeAreaBottom}}" />
+
+</view>
